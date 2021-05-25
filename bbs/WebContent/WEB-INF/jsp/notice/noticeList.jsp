@@ -6,8 +6,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script>
+	function formSubmit(id) {
+		frm.id.value = id;
+		frm.submit();
+	}
+</script>
 </head>
 <body>
+	<form id="frm" action= "notice.do" method = "post" >
+		<input type="hidden" id="id" name="id">
+		
+	</form>
 	<div align="center">
 		<div style="width:90%">
 			<table class="table" border="1">
@@ -18,7 +28,7 @@
 					<th width="100">조회수</th>
 				</tr>
 				<c:forEach items="${noticeList }" var="vo">
-					<tr>
+					<tr onclick="formSubmit(${vo.id })">
 						<td>${vo.id }</td>
 						<td>${vo.title }</td>
 						<td>${vo.regDate }</td>

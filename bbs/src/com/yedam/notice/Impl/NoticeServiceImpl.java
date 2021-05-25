@@ -43,12 +43,12 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 	
 	//한건 조회
 	@Override
-	public NoticeVO noticeSelect(NoticeVO vo) {
+	public NoticeVO noticeSelect(int id) {
 		String sql = "select from notice where id = ?";
 		NoticeVO rvo = null; 
 		try {
 			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, vo.getId());
+			psmt.setInt(1, id);
 			rs = psmt.executeQuery();
 			if(rs.next()) {
 				rvo = new NoticeVO();
