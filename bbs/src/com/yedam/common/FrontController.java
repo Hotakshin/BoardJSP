@@ -16,7 +16,10 @@ import com.yedam.member.web.MemberLogOut;
 import com.yedam.member.web.MemberLogin;
 import com.yedam.member.web.MemberLoginForm;
 import com.yedam.notice.web.Notice;
+import com.yedam.notice.web.NoticeInsert;
 import com.yedam.notice.web.NoticeList;
+import com.yedam.notice.web.NoticeListPaging;
+import com.yedam.notice.web.NoticeUpdate;
 
 public class FrontController extends HttpServlet {
 	private HashMap<String, DbCommand> map = new HashMap<>();
@@ -33,7 +36,11 @@ public class FrontController extends HttpServlet {
 
 		//공지사항
 		map.put("/noticeList.do", new NoticeList());
+		map.put("/noticeListPaging.do",new NoticeListPaging());
 		map.put("/notice.do", new Notice());
+		map.put("/noticeUpdate.do", new NoticeUpdate());
+		map.put("/noticeInsert.do", new NoticeInsert());
+		
 	}
 
 	@Override

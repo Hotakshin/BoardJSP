@@ -7,24 +7,24 @@ import com.yedam.common.DbCommand;
 import com.yedam.notice.Impl.NoticeServiceImpl;
 import com.yedam.notice.vo.NoticeVO;
 
-public class Notice implements DbCommand {
+public class NoticeInsert implements DbCommand {
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) {
-		// 한건 조회 -- > notice.jsp
-		// serviceImpl 구현.
-		String id = request.getParameter("id");
-		NoticeVO vo = new NoticeVO();
 		
-		vo.setId(Integer.parseInt(id));
+		String title = request.getParameter("title");
+		String Content = request.getParameter("contents");
 		
 		NoticeServiceImpl service = new NoticeServiceImpl();
-		service.noticeSelect(vo);
-	
+		NoticeVO vo = new NoticeVO();
+		
+		vo.setTitle(title);
+		vo.setContent(Content);
+		
+		service.insertNotice(vo);
 		
 		request.setAttribute("notice", vo);
-		
-		return "notice/notice.tiles";
+		return "noticeListPaging.do";
 	}
 
 }

@@ -10,5 +10,5 @@ public interface NoticeService {
 	int insertNotice(NoticeVO vo);
 	int updateNotice(NoticeVO vo);
 	int deleteNotice(NoticeVO vo);
-	NoticeVO noticeSelect(int id);
+	NoticeVO noticeSelect(NoticeVO vo);
 }
