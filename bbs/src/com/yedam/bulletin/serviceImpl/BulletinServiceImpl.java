@@ -1,4 +1,4 @@
-package com.yedam.notice.Impl;
+package com.yedam.bulletin.serviceImpl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,44 +6,34 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.yedam.bulletin.service.BulletinService;
+import com.yedam.bulletin.vo.BulletinVO;
 import com.yedam.common.DAO;
-import com.yedam.notice.service.NoticeService;
-import com.yedam.notice.vo.NoticeVO;
 
-public class NoticeServiceImpl extends DAO implements NoticeService{
+public class BulletinServiceImpl extends DAO implements BulletinService {
+
+	
 	PreparedStatement psmt;
 	ResultSet rs;
 	
-	// 리스트 정렬하기 > 쿼리가 중요함
-	public List<NoticeVO> noticeListPaging(int page) {
-		String sql = "select b.* from ( select rownum rn, a.* from "
-				+ "(select * from notice order by id)a)b"
-				+ " where b.rn between ? and ?";
-		
-		// 한페이지당 10 개씩
-		int firstCnt = 0; 
-		int lastCnt = 0;
-		
-		List<NoticeVO> list = new ArrayList();
-		firstCnt = (page -1) * 10 + 1; // 1, 11	
-		lastCnt = (page * 10); // 10,20
-		
+	String sql;
+	
+	@Override
+	public List<BulletinVO> bulletinSelectList() {
+		List<BulletinVO> list = new ArrayList<>();
+		sql = "select * from Bulletin order by 1";
 		try {
 			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, firstCnt);
-			psmt.setInt(2, lastCnt);
-			
 			rs = psmt.executeQuery();
 			while(rs.next()) {
-				NoticeVO vo = new NoticeVO();
-				vo.setContent(rs.getString("content"));
-				vo.setHit(rs.getInt("hit"));
+				BulletinVO vo = new BulletinVO();
 				vo.setId(rs.getInt("id"));
-				vo.setRegDate(rs.getDate("reg_date"));
 				vo.setTitle(rs.getString("title"));
+				vo.setContent(rs.getString("content"));
+				vo.setWriter(rs.getString("writer"));
+				vo.setRegDate(rs.getDate("reg_date"));
+				vo.setHit(rs.getInt("hit"));
 				list.add(vo);
-				
-				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -51,43 +41,12 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 		} finally {
 			close();
 		}
-
-		return list;
-
-		
-	}
-	
-	//전체 리스트
-	@Override
-	public List<NoticeVO> noticeSelectList() {
-		String sql = "select * from notice order by 1";
-		List<NoticeVO> list = new ArrayList<>();
-		try {
-			psmt = conn.prepareStatement(sql);
-			rs = psmt.executeQuery();
-			while(rs.next()) {
-				NoticeVO vo = new NoticeVO();
-				vo.setId(rs.getInt("id"));
-				vo.setTitle(rs.getString("title"));
-				vo.setContent(rs.getString("content"));
-				vo.setRegDate(rs.getDate("reg_date"));
-				vo.setHit(rs.getInt("hit"));
-				
-				list.add(vo);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			close();
-		}
 		return list;
 	}
 
-	
-	//한건 조회
 	@Override
-	public NoticeVO noticeSelect(NoticeVO vo) {
-		String sql = "select * from notice where id = ?";
+	public BulletinVO bulletinSelect(BulletinVO vo) {
+		sql = "select * from bulletin where id=?";
 		try {
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, vo.getId());
@@ -95,28 +54,29 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 			if(rs.next()) {
 				hitCount(vo.getId());
 				vo.setTitle(rs.getString("title"));
+				vo.setWriter(rs.getString("writer"));
 				vo.setContent(rs.getString("content"));
 				vo.setRegDate(rs.getDate("reg_date"));
 				vo.setHit(rs.getInt("hit"));
 			}
-		} catch (SQLException e) {
+			vo.setId(rs.getInt("id"));
+			} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			close();
 		}
 		return vo;
 	}
 
-	
-	//한건입력
 	@Override
-	public int insertNotice(NoticeVO vo) {
-		String sql = "insert into notice values(notice_seq.nextval, ?,?,sysdate,0)";
+	public int insertBulletin(BulletinVO vo) {
+		sql = "insert into Bulletin values(bulletin_seq.nextval,?,?,?,sysdate,0)";
 		int insert = 0;
 		try {
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, vo.getTitle());
 			psmt.setString(2, vo.getContent());
+			psmt.setString(3, vo.getWriter());
 			
 			insert = psmt.executeUpdate();
 		} catch (SQLException e) {
@@ -125,16 +85,12 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 		} finally {
 			close();
 		}
-		
-		
 		return insert;
 	}
 
-	
-	//한건 수정
 	@Override
-	public int updateNotice(NoticeVO vo) {
-		String sql = "update notice set title = ?, content =? where id = ?";
+	public int updateBulletin(BulletinVO vo) {
+		sql = "update bulletin set title = ?, content = ? where id = ?";
 		int update = 0;
 		try {
 			psmt = conn.prepareStatement(sql);
@@ -143,27 +99,36 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 			psmt.setInt(3, vo.getId());
 			
 			update = psmt.executeUpdate();
-			System.out.println(update + "건 수정이 완료되었습니다");
+			System.out.println(update + "건 수정완료");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			close();
 		}
-		
 		return update;
 	}
 
-	
-	//한건 삭제
 	@Override
-	public int deleteNotice(NoticeVO vo) {
-		
-		return 0;
+	public int deleteBulletin(BulletinVO vo) {
+		sql = "delete from bulletin where id = ?";
+		int delete = 0;
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, vo.getId());
+			delete = psmt.executeUpdate();
+			System.out.println(delete + "건 삭제완료");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return delete;
 	}
 	
 	public void hitCount(int id) {
-		String sql = "update notice set hit = hit + 1 where id = ?";
+		String sql = "update bulletin set hit = hit + 1 where id = ?";
 		
 		try {
 			psmt = conn.prepareStatement(sql);
@@ -175,7 +140,6 @@ public class NoticeServiceImpl extends DAO implements NoticeService{
 			e.printStackTrace();
 		}
 	}
-
 	
 	public void close() {
 
