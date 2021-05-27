@@ -4,11 +4,12 @@
        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 
 <tiles-definitions>
-	<definition name="home" template="/WEB-INF/jsp/layout/template.jsp">
+	<definition name="home" template="/WEB-INF/jsp/layout/template2.jsp">
 		<put-attribute name="title" value="Welcome to Home!!" />
-		<put-attribute name="menu" value="/WEB-INF/jsp/layout/menu.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/jsp/layout/menu2.jsp" />
 		<put-attribute name="body" value="/WEB-INF/jsp/layout/home.jsp" />
-		<put-attribute name="foot" value="/WEB-INF/jsp/layout/foot.jsp" />
+		<put-attribute name="head" value="/WEB-INF/jsp/layout/head.jsp" />
+		<put-attribute name="foot" value="/WEB-INF/jsp/layout/foot2.jsp" />
 	</definition>
 
 	<definition name="WILDCARD:*/*" extends="home">
