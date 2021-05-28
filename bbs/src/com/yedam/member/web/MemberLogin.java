@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.yedam.common.DbCommand;
 import com.yedam.member.serviceImpl.MemberServiceImpl;
 import com.yedam.member.vo.MemberVO;
+import com.yedam.product.serviceImpl.ProductServiceImpl;
 
 public class MemberLogin implements DbCommand {
 
@@ -15,9 +16,11 @@ public class MemberLogin implements DbCommand {
 		//id,pwd -> member테이블에서 체크 -> 결과 return
 		//회원이면 이름을 화면에 출력
 		HttpSession session = request.getSession();
-		
+		ProductServiceImpl service1 = new ProductServiceImpl();
 		String id = request.getParameter("memberId");
 		String pwd = request.getParameter("memberPwd");
+		
+		int cnt = service1.getCountCart(id);
 		
 		MemberVO vo = new MemberVO();
 		vo.setId(id);
@@ -33,6 +36,7 @@ public class MemberLogin implements DbCommand {
 			//로그인 처리 -> memberloginSuccess.jsp
 			session.setAttribute("id", rvo.getId());
 			request.setAttribute("vo", rvo);
+			request.setAttribute("cartCnt", cnt);
 			path = "member/memberloginSuccess.tiles";
 		}
 		
