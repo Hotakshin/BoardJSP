@@ -28,7 +28,7 @@ public class MemberJoin implements DbCommand {
 		
 		MemberService service = new MemberServiceImpl();
 		service.insertMember(vo);
-		
+
 		session.setAttribute("id", id);
 		session.setAttribute("member", vo);
 		
